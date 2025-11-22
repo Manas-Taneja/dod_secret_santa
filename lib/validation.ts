@@ -18,6 +18,9 @@ const optionalText = z
 export const registerSchema = z.object({
   username: z.string().trim().min(2).max(60),
   password: z.string().min(1).max(72),
+  tshirtSize: z.string().trim().max(20).optional().or(z.literal("").transform(() => undefined)),
+  bottomsSize: z.string().trim().max(20).optional().or(z.literal("").transform(() => undefined)),
+  shoeSize: z.string().trim().max(20).optional().or(z.literal("").transform(() => undefined)),
 });
 
 export const loginSchema = z.object({

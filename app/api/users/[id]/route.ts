@@ -22,6 +22,9 @@ export async function GET(_: Request, { params }: Params) {
     select: {
       id: true,
       displayName: true,
+      tshirtSize: true,
+      bottomsSize: true,
+      shoeSize: true,
       wishlistItems: {
         orderBy: [{ priority: "asc" }, { createdAt: "desc" }],
       },

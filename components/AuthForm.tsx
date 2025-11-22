@@ -37,6 +37,9 @@ export default function AuthForm({ mode }: Props) {
   const [form, setForm] = useState({
     username: "",
     password: "",
+    tshirtSize: "",
+    bottomsSize: "",
+    shoeSize: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,6 +63,11 @@ export default function AuthForm({ mode }: Props) {
         body: JSON.stringify({
           username: form.username,
           password: form.password,
+          ...(mode === "register" && {
+            tshirtSize: form.tshirtSize || undefined,
+            bottomsSize: form.bottomsSize || undefined,
+            shoeSize: form.shoeSize || undefined,
+          }),
         }),
       });
 
@@ -119,6 +127,56 @@ export default function AuthForm({ mode }: Props) {
             suppressHydrationWarning
           />
         </div>
+
+        {mode === "register" && (
+          <>
+            <div className="space-y-1">
+              <label className="rounded-2xl bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur" htmlFor="tshirtSize">
+                T-Shirt Size (optional)
+              </label>
+              <input
+                className="w-full rounded-2xl border border-white/20 bg-black/50 px-4 py-3 text-base text-white placeholder-white/50 outline-none transition focus:border-white/40 focus:bg-black/70 backdrop-blur"
+                id="tshirtSize"
+                name="tshirtSize"
+                type="text"
+                placeholder="M, L, XL, etc."
+                maxLength={20}
+                value={form.tshirtSize}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="rounded-2xl bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur" htmlFor="bottomsSize">
+                Bottoms Size (optional)
+              </label>
+              <input
+                className="w-full rounded-2xl border border-white/20 bg-black/50 px-4 py-3 text-base text-white placeholder-white/50 outline-none transition focus:border-white/40 focus:bg-black/70 backdrop-blur"
+                id="bottomsSize"
+                name="bottomsSize"
+                type="text"
+                placeholder="30, 32, M, L, etc."
+                maxLength={20}
+                value={form.bottomsSize}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="rounded-2xl bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur" htmlFor="shoeSize">
+                Shoe Size (optional)
+              </label>
+              <input
+                className="w-full rounded-2xl border border-white/20 bg-black/50 px-4 py-3 text-base text-white placeholder-white/50 outline-none transition focus:border-white/40 focus:bg-black/70 backdrop-blur"
+                id="shoeSize"
+                name="shoeSize"
+                type="text"
+                placeholder="9, 10, 42, etc."
+                maxLength={20}
+                value={form.shoeSize}
+                onChange={handleChange}
+              />
+            </div>
+          </>
+        )}
 
         {error && (
           <p className="rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur">

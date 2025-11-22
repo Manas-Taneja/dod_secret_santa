@@ -19,6 +19,9 @@ type WishlistItem = {
 type UserWithWishlist = {
   id: string;
   displayName: string;
+  tshirtSize: string | null;
+  bottomsSize: string | null;
+  shoeSize: string | null;
   wishlistItems: WishlistItem[];
 };
 
@@ -31,6 +34,14 @@ export default function UserProfile({ user, currentUserId }: Props) {
   const { user: sessionUser } = useSession();
   const router = useRouter();
   const isOwnProfile = user.id === currentUserId;
+
+  // Debug: log user data
+  console.log("UserProfile - user data:", {
+    displayName: user.displayName,
+    tshirtSize: user.tshirtSize,
+    bottomsSize: user.bottomsSize,
+    shoeSize: user.shoeSize,
+  });
 
   const handleLogout = async () => {
     try {
@@ -77,6 +88,25 @@ export default function UserProfile({ user, currentUserId }: Props) {
               ? "Your wishlist"
               : `${user.displayName}'s wishlist`}
           </p>
+          {(user.tshirtSize || user.bottomsSize || user.shoeSize) && (
+            <div className="mt-2 flex flex-wrap gap-2 text-sm">
+              {user.tshirtSize && (
+                <span className="rounded-2xl border border-white/20 bg-black/50 px-3 py-1 text-white backdrop-blur">
+                  T-Shirt: {user.tshirtSize}
+                </span>
+              )}
+              {user.bottomsSize && (
+                <span className="rounded-2xl border border-white/20 bg-black/50 px-3 py-1 text-white backdrop-blur">
+                  Bottoms: {user.bottomsSize}
+                </span>
+              )}
+              {user.shoeSize && (
+                <span className="rounded-2xl border border-white/20 bg-black/50 px-3 py-1 text-white backdrop-blur">
+                  Shoe: {user.shoeSize}
+                </span>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <Link

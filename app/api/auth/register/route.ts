@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { username, password } = parsed.data;
+    const { username, password, tshirtSize, bottomsSize, shoeSize } = parsed.data;
     const existing = await prisma.user.findUnique({ where: { displayName: username } });
     if (existing) {
       return NextResponse.json(
@@ -35,6 +35,9 @@ export async function POST(request: Request) {
       data: {
         displayName: username,
         hashedPassword,
+        tshirtSize: tshirtSize || null,
+        bottomsSize: bottomsSize || null,
+        shoeSize: shoeSize || null,
       },
     });
 

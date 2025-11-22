@@ -20,6 +20,9 @@ type WishlistItem = {
 type UserWithWishlist = {
   id: string;
   displayName: string;
+  tshirtSize: string | null;
+  bottomsSize: string | null;
+  shoeSize: string | null;
   wishlistItems: WishlistItem[];
 };
 
@@ -35,22 +38,17 @@ export default function AllWishlistsView({ currentUserId, users: initialUsers }:
   const [loading, setLoading] = useState(!initialUsers);
 
   useEffect(() => {
-    // Only fetch if we don't have initial data
-    if (initialUsers) {
-      setLoading(false);
-      return;
-    }
-
+    // Always fetch client-side
     const fetchUsers = async () => {
       try {
-        const response = await fetch("/api/users", {
-          cache: "force-cache",
-        });
+        setLoading(true);
+        const response = await fetch("/api/users");
         if (!response.ok) {
           throw new Error("Failed to fetch users");
         }
         const data = await response.json();
-        setUsers(data.users);
+        console.log("Fetched users:", data.users);
+        setUsers(data.users || []);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -59,7 +57,7 @@ export default function AllWishlistsView({ currentUserId, users: initialUsers }:
     };
 
     fetchUsers();
-  }, [initialUsers]);
+  }, []);
 
   const handleLogout = async () => {
     try {
