@@ -11,8 +11,8 @@ type Props = {
 
 const copy = {
   login: {
-    title: "Welcome back",
-    description: "Sign in to manage your wishlist and see your match.",
+    title: "DOD Secret Santa 2025",
+    description: "Sign in to manage your wishlist.",
     submit: "Sign in",
     alt: {
       label: "Need an account?",
