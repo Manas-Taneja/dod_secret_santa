@@ -1,0 +1,137 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { useSession } from "@/hooks/useSession";
+import LinkPreviewCard from "@/components/LinkPreviewCard";
+
+type WishlistItem = {
+  id: string;
+  title: string;
+  description: string | null;
+  url: string | null;
+  priority: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type UserWithWishlist = {
+  id: string;
+  displayName: string;
+  wishlistItems: WishlistItem[];
+};
+
+type Props = {
+  user: UserWithWishlist;
+  currentUserId: string;
+};
+
+export default function UserProfile({ user, currentUserId }: Props) {
+  const { user: sessionUser } = useSession();
+  const router = useRouter();
+  const isOwnProfile = user.id === currentUserId;
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      router.push("/login");
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      <header className="relative flex flex-col gap-4 rounded-3xl border border-white/20 bg-black/50 p-6 text-white shadow-sm backdrop-blur-lg">
+        <button
+          className="absolute right-6 top-6 rounded-full p-2 text-red-400 transition hover:bg-red-900/30 hover:text-red-300"
+          onClick={handleLogout}
+          title="Log out"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </svg>
+        </button>
+        <div className="flex flex-col gap-2">
+          <h1 className="rounded-2xl px-4 py-2 text-3xl font-semibold text-white">
+            {user.displayName}
+            {isOwnProfile && (
+              <span className="ml-2 text-sm font-normal text-gray-400">
+                (You)
+              </span>
+            )}
+          </h1>
+          <p className="text-sm text-gray-300">
+            {isOwnProfile
+              ? "Your wishlist"
+              : `${user.displayName}'s wishlist`}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <Link
+            href="/"
+            className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 font-semibold text-green-300 transition hover:bg-white/20 backdrop-blur"
+          >
+            My Wishlist
+          </Link>
+          <Link
+            href="/wishlists"
+            className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 font-semibold text-green-300 transition hover:bg-white/20 backdrop-blur"
+          >
+            All Wishlists
+          </Link>
+        </div>
+      </header>
+
+      <div className="rounded-3xl border border-white/20 bg-black/50 p-6 shadow-sm backdrop-blur-lg">
+        {user.wishlistItems.length === 0 ? (
+          <p className="rounded-2xl px-4 py-2 text-sm text-white">
+            {isOwnProfile
+              ? "You haven't added any items yet."
+              : `${user.displayName} hasn't added any items yet.`}
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {user.wishlistItems.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-2xl border border-white/20 bg-black/50 p-4 text-sm backdrop-blur-lg"
+              >
+                <div>
+                  <p className="rounded-2xl bg-white/10 px-3 py-1 text-lg font-semibold text-white backdrop-blur">
+                    {item.title}
+                  </p>
+                  {item.description && (
+                    <p className="rounded-2xl bg-white/10 px-3 py-1 mt-2 text-sm text-white backdrop-blur">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+                {item.url && (
+                  <div className="mt-2 w-full">
+                    <LinkPreviewCard
+                      key={`${item.id}-${item.url}`}
+                      url={item.url}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+

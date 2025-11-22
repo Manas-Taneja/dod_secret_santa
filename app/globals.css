@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +12,115 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+/* Ensure Microlink card has full width */
+.microlink_card,
+a[class*="microlink_card"],
+[data-microlink] {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+/* Ensure Microlink images display properly - CRITICAL: Keep these rules */
+.microlink_card__media,
+.microlink_card__media_image,
+div[class*="microlink_card__media"] {
+  display: block !important;
+  width: 70% !important;
+  min-width: 100% !important;
+  min-height: 200px !important;
+  height: 350px !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+/* Hide the URL/footer section - multiple selectors to catch all variations */
+.microlink_card__content_url,
+[class*="microlink_card__content_url"],
+.microlink_card footer,
+.microlink_card__content footer,
+footer[class*="microlink"],
+[class*="microlink_card__content_url"] p,
+.microlink_card__content_url p {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Hide the title and description content section */
+.microlink_card__content,
+[class*="microlink_card__content"],
+.microlink_card__content_title,
+.microlink_card__content_description,
+[class*="microlink_card__content_title"],
+[class*="microlink_card__content_description"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Background image is set by JavaScript in LinkPreviewCard component */
+
+/* Also handle img tags if they exist */
+[data-microlink] img,
+.microlink__image img,
+[class*="microlink"] img {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Rotatable background image container */
+.bg-rotatable {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-rotatable::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/background.jpeg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: -1;
+  transform: rotate(0deg);
+  transform-origin: center center;
+}
+
+/* Rotate background 90 degrees on mobile */
+@media (max-width: 768px) {
+  .bg-rotatable::before {
+    transform: rotate(90deg);
+    width: 100vh;
+    height: 100vw;
+    top: 50%;
+    left: 50%;
+    margin-top: -50vw;
+    margin-left: -50vh;
+  }
 }
